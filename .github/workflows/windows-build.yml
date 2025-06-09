@@ -14,9 +14,18 @@ jobs:
       - name: Install CMake
         uses: lukka/get-cmake@latest
 
-      - name: Patch CMakeLists.txt (fix version)
+      - name: Fix CMake minimum version
+        shell: pwsh
         run: |
-          powershell -Command "(Get-Content CMakeLists.txt) -replace 'cmake_minimum_required\\(VERSION 2.6\\)', 'cmake_minimum_required(VERSION 3.5)' | Set-Content CMakeLists.txt"
+          $fixedLines = @()
+          Get-Content CMakeLists.txt | ForEach-Object {
+            if ($_ -match 'cmake_minimum_required\(VERSION 2\.6\)') {
+              $fixedLines += 'cmake_minimum_required(VERSION 3.5)'
+            } else {
+              $fixedLines += $_
+            }
+          }
+          $fixedLines | Set-Content -NoNewline CMakeLists.txt
 
       - name: Configure with CMake (DLL)
         run: |
