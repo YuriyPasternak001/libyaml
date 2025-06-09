@@ -1,7 +1,7 @@
 name: Windows DLL Build
 
 on:
-  workflow_dispatch:  # Дозволяє запуск вручну з GitHub UI
+  workflow_dispatch:
 
 jobs:
   build-windows:
@@ -14,9 +14,13 @@ jobs:
       - name: Install CMake
         uses: lukka/get-cmake@latest
 
+      - name: Patch CMakeLists.txt (fix version)
+        run: |
+          powershell -Command "(Get-Content CMakeLists.txt) -replace 'cmake_minimum_required\\(VERSION 2.6\\)', 'cmake_minimum_required(VERSION 3.5)' | Set-Content CMakeLists.txt"
+
       - name: Configure with CMake (DLL)
         run: |
-          cmake -S . -B build -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+          cmake -S . -B build -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
 
       - name: Build project
         run: cmake --build build --config Release
