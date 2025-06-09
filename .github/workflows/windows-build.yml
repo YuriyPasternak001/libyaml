@@ -25,7 +25,7 @@ jobs:
               $fixedLines += $_
             }
           }
-          $fixedLines | Set-Content -NoNewline CMakeLists.txt
+          $fixedLines | Set-Content CMakeLists.txt
 
       - name: Configure with CMake (DLL)
         run: |
