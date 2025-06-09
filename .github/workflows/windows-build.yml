@@ -1,0 +1,31 @@
+name: Windows DLL Build
+
+on:
+  workflow_dispatch:  # Дозволяє запуск вручну з GitHub UI
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure with CMake (DLL)
+        run: |
+          cmake -S . -B build -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build project
+        run: cmake --build build --config Release
+
+      - name: Upload DLL and import library
+        uses: actions/upload-artifact@v3
+        with:
+          name: libyaml-windows-dll
+          path: |
+            build/Release/libyaml.dll
+            build/Release/libyaml.lib
+            include/yaml.h
