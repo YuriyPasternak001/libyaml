@@ -14,12 +14,19 @@ jobs:
       - name: Install CMake
         uses: lukka/get-cmake@latest
 
-      - name: Fix CMakeLists.txt version explicitly
+      - name: Ensure only one cmake_minimum_required
         shell: pwsh
         run: |
-          $content = Get-Content CMakeLists.txt
-          $content[0] = 'cmake_minimum_required(VERSION 3.5)'
-          Set-Content CMakeLists.txt $content
+          $lines = Get-Content CMakeLists.txt
+          $cleaned = @()
+          foreach ($line in $lines) {
+            if (-not ($line -match 'cmake_minimum_required')) {
+              $cleaned += $line
+            }
+          }
+          $newHeader = 'cmake_minimum_required(VERSION 3.16)'
+          $final = @($newHeader) + $cleaned
+          $final | Set-Content CMakeLists.txt
 
       - name: Configure with CMake (DLL)
         run: |
