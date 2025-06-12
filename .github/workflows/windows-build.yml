@@ -30,7 +30,7 @@ jobs:
 
       - name: Configure with CMake (DLL)
         run: |
-          cmake -S . -B build -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build -DBUILD_SHARED_LIBS=ON
 
       - name: Build project
         run: cmake --build build --config Release
